@@ -1,0 +1,30 @@
+# ════════════════════════════════════════════════════════════════
+# ReceiptBot — Cloudflare Worker + Durable Object
+# แปลงมาจาก ReceiptBot.gs (Apps Script) — logic เหมือนเดิม เปลี่ยนแค่ layer I/O
+# ════════════════════════════════════════════════════════════════
+name = "receiptbot"
+main = "src/index.js"
+compatibility_date = "2025-01-01"
+
+# ⚠️ ตั้งค่านี้หลัง deploy ครั้งแรก (เอา URL ที่ wrangler พ่นออกมา มาใส่)
+#    ใช้ทำลิงก์ปุ่มในการ์ด (open_url → GET กลับมาที่ Worker ตัวเอง)
+[vars]
+WORKER_URL = "https://receiptbot.CHANGE-ME.workers.dev"
+
+# KV: เก็บ dedup event_id, cache lark token + employee record
+[[kv_namespaces]]
+binding = "KV"
+id = "REPLACE_WITH_KV_ID"      # ← wrangler kv namespace create STATE แล้วเอา id มาใส่
+
+# Durable Object: 1 instance ต่อ 1 พนักงาน (openId) = serialize รูปที่มารัวๆ
+[[durable_objects.bindings]]
+name = "SESSION"
+class_name = "SessionDO"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["SessionDO"]
+
+# secrets (ไม่ใส่ในไฟล์นี้ — ใช้ wrangler secret put):
+#   wrangler secret put CLAUDE_KEY        (sk-ant-...)
+#   wrangler secret put LARK_APP_SECRET
