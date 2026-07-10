@@ -14,7 +14,7 @@ WORKER_URL = "https://receiptbot.CHANGE-ME.workers.dev"
 # KV: เก็บ dedup event_id, cache lark token + employee record
 [[kv_namespaces]]
 binding = "KV"
-id = "REPLACE_WITH_KV_ID"      # ← wrangler kv namespace create STATE แล้วเอา id มาใส่
+id = "f88be6b95e48467ebbc031f556f96b0f"      # ← wrangler kv namespace create STATE แล้วเอา id มาใส่
 
 # Durable Object: 1 instance ต่อ 1 พนักงาน (openId) = serialize รูปที่มารัวๆ
 [[durable_objects.bindings]]
